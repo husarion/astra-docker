@@ -1,0 +1,38 @@
+version: "2.3"
+
+services:
+  # ROS Noetic + ROS 2 Foxy
+  bridge:
+    image: ros:foxy-ros1-bridge
+    environment:
+      - "ROS_MASTER_URI=http://ros-master:11311"
+    command: ros2 run ros1_bridge dynamic_bridge
+
+  # ROS Noetic
+  ros-master:
+      image: ros:noetic-ros-core
+      tty: true        # docker run -t
+      command: stdbuf -o L roscore
+
+  # ROS Melodic
+  ros-rplidar:
+    build:
+      context: ../../../  
+      dockerfile: ./Dockerfile
+    privileged: true
+    devices:
+      - /dev/ttyUSB0
+    environment:
+        - "ROS_MASTER_URI=http://ros-master:11311"
+    tty: true        # docker run -t
+    command: roslaunch /opt/ros/ros_ws/src/ros_astra_camera/launch/astra.launch
+
+  # ROS 2 Foxy
+  rviz-nvidia:
+    image: husarion/rviz2-rosbot:latest
+    runtime: nvidia    
+    environment: 
+        - DISPLAY
+        - NVIDIA_VISIBLE_DEVICES=all
+    volumes:
+        - /tmp/.X11-unix:/tmp/.X11-unix:rw
