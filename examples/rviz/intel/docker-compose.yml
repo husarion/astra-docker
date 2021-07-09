@@ -9,7 +9,7 @@ services:
     devices:
       - /dev/ttyUSB0
     tty: true        # docker run -t
-    command: command: roslaunch ros_astra_camera astra.launch
+    command: roslaunch ros_astra_camera astra.launch
 
   # ROS Noetic + ROS 2 Foxy
   bridge:
