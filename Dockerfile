@@ -1,4 +1,4 @@
-from ros:melodic
+from ros:melodic-ros-core
 
 SHELL ["/bin/bash", "-c"]
 
@@ -6,7 +6,9 @@ RUN apt update && apt install -y \
     ros-melodic-rgbd-launch \
     ros-melodic-libuvc \
     ros-melodic-libuvc-camera \
-    ros-melodic-libuvc-ros
+    ros-melodic-libuvc-ros \
+    build-essential \
+    git
 
 WORKDIR /app
 
@@ -19,6 +21,7 @@ RUN cd ros_ws && \
 
 # setup entrypoint
 COPY ./ros_entrypoint.sh /
+
 
 ENTRYPOINT ["/ros_entrypoint.sh"]
 CMD ["bash"]

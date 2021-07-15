@@ -9,20 +9,27 @@ This repository contains a GitHub Actions workflow for auto-deployment of built 
 sudo docker build -t astra .
 ```
 
+## Determinating which device is Astra
+Find Astra's Bus and Device number by running *lsusb*.
+```bash
+Bus 001 Device 006: ID 2bc5:0401 Orbbec(R) ORBBEC Depth Sensor
+```
+
 ## Running a Docker image
+
 
 ```bash
 sudo docker run --rm -it \
---device /dev/ttyUSB0 \
-astra \
-roslaunch ros_astra_camera astra.launch
+    --device /dev/bus/usb/001/006 \
+    astra \
+    roslaunch astra_camera astra.launch
 ```
 
 ## Examples (using Docker Compose)
 
 ### Astra container + rviz container
 
-Connect Orbbec Astra camera to your laptop and deppending you have NVIDIA GPU or not, choose the right example:
+Connect Orbbec Astra camera, to your laptop, change device in *docker-compose.yaml* like in previous step and deppending you have NVIDIA GPU or not, choose the right example:
 
 #### [option 1] NVIDIA GPU
 

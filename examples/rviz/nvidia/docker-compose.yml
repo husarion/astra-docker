@@ -7,9 +7,9 @@ services:
       context: ../../../  
       dockerfile: ./Dockerfile
     devices:
-      - /dev/ttyUSB0
+      - /dev/bus/usb/001/006
     tty: true        # docker run -t
-    command: roslaunch ros_astra_camera astra.launch
+    command: roslaunch astra_camera astra.launch
 
   # ROS Noetic + ROS 2 Foxy
   bridge:
