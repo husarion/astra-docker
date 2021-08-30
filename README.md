@@ -19,7 +19,7 @@ Bus 001 Device 006: ID 2bc5:0401 Orbbec(R) ORBBEC Depth Sensor
 ```bash
 sudo docker run --rm -it \
     --device /dev/bus/usb/001/006 \
-    astra \
+    husarion/astra \
     roslaunch astra_camera astra.launch
 ```
 
