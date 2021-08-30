@@ -1,4 +1,4 @@
-from ros:melodic-ros-core 
+FROM ros:melodic-ros-core 
 
 SHELL ["/bin/bash", "-c"]
 
