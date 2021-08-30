@@ -3,9 +3,7 @@ version: "2.3"
 services:
   # ROS Melodic
   astra:
-    build:
-      context: ../../../  
-      dockerfile: ./Dockerfile
+    image: husarion/astra-docker
     devices:
       - /dev/bus/usb/001/006
     tty: true        # docker run -t

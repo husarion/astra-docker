@@ -1,7 +1,5 @@
 # astra-docker
-Dockerized Orbbec Astra package from https://github.com/orbbec/ros_astra_camera repository
-
-This repository contains a GitHub Actions workflow for auto-deployment of built Docker image to https://hub.docker.com/r/husarion/astra repository.
+Dockerized Orbbec Astra package from [orbbec/ros_astra_camera ](https://github.com/orbbec/ros_astra_camera) repository.
 
 ## Building a Docker image
 
@@ -25,26 +23,26 @@ sudo docker run --rm -it \
     roslaunch astra_camera astra.launch
 ```
 
-## Examples (using Docker Compose)
+## Examples
 
 ### Astra container + rviz container
 
 Connect Orbbec Astra camera, to your laptop, change device in *docker-compose.yaml* like in previous step and deppending you have NVIDIA GPU or not, choose the right example:
 
-#### [option 1] NVIDIA GPU
+#### NVIDIA GPU
 
 ```bash
 cd examples/rviz/nvidia
 
 xhost local:root
-docker-compose up --build
+docker-compose up
 ```
 
-#### [option 2] Intel GPU
+#### Intel GPU
 
 ```bash
 cd examples/rviz/intel
 
 xhost local:root
-docker-compose up --build
+docker-compose up
 ```
