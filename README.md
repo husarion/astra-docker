@@ -1,12 +1,6 @@
 # astra-docker
 Dockerized Orbbec Astra package from [orbbec/ros_astra_camera ](https://github.com/orbbec/ros_astra_camera) repository.
 
-## Building a Docker image
-
-```bash
-sudo docker build -t astra .
-```
-
 ## Determinating which device is Astra
 Find Astra's Bus and Device number by running *lsusb*.
 ```bash
