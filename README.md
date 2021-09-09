@@ -17,6 +17,17 @@ sudo docker run --rm -it \
     roslaunch astra_camera astra.launch
 ```
 
+## ROS node 
+
+For more information on what is being published by ROS node in this docker refer to it's [README.md](https://github.com/orbbec/ros_astra_camera#important-topics)
+
+Some of the topics are shown below.
+### Publishes
+
+- `*/image_raw` *(sensor_msgs/Image)*
+- `*/camera_info` *(sensor_msgs/CameraInfo)*
+- `/camera/depth/points` *(sensor_msgs/PointCloud)*
+
 ## Examples
 
 ### Astra container + rviz container
