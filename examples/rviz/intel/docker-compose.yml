@@ -3,9 +3,9 @@ version: "2.3"
 services:
   # ROS Melodic
   astra:
-    image: husarion/astra
+    image: husarion/astra:melodic
     devices:
-      - /dev/bus/usb/001/006
+      - /dev/bus/usb
     tty: true        # docker run -t
     command: roslaunch astra_camera astra.launch
 
@@ -18,12 +18,11 @@ services:
 
   # ROS 2 Foxy
   rviz-intel:
-    image: husarion/rviz2-rosbot:latest
+    image: husarion/rviz2:galactic
     environment: 
       - DISPLAY
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - ./config.rviz:/root/.rviz2/default.rviz
-    command: ros2 run rviz2 rviz2
 
 
