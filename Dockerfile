@@ -2,6 +2,8 @@
 
 FROM ros:galactic
 
+SHELL ["/bin/bash", "-c"]
+
 RUN apt update && apt install -y \
         wget \
         libgflags-dev \
@@ -38,7 +40,7 @@ RUN wget -c https://dl.orbbec3d.com/dist/orbbecsdk/ROS2/v1.0/OrbbecSDK_ROS2_v1.0
     cp -r OrbbecSDK_ROS2/* /ros2_ws && \
     rm -rf OrbbecSDK_ROS2*
 
-SHELL ["/bin/bash", "-c"]
-
 RUN source "/opt/ros/$ROS_DISTRO/setup.bash" && \
     colcon build --event-handlers  console_direct+  --cmake-args  -DCMAKE_BUILD_TYPE=Release
+
+COPY ros_entrypoint.sh /ros_entrypoint.sh
