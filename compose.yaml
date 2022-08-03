@@ -1,0 +1,37 @@
+version: "2.3"
+
+services:
+  astra:
+    build: .
+    devices:
+      # - /dev/bus/usb/001/011
+      - /dev/bus/usb/
+    volumes:
+      - /etc/udev/rules.d:/etc/udev/rules.d
+    tty: true        # docker run -t
+    environment:
+      - ROS_MASTER_URI=http://ros-master:11311
+    command: roslaunch --wait astra_camera astra.launch
+
+  ros-master:
+    image: ros:noetic-ros-core
+    restart: unless-stopped
+    tty: true        # docker run -t
+    command: stdbuf -o L roscore
+
+  bridge:
+    image: ros:galactic-ros1-bridge
+    restart: unless-stopped
+    environment:
+      - ROS_MASTER_URI=http://ros-master:11311
+    command: ros2 run ros1_bridge dynamic_bridge --bridge-all-2to1-topics
+
+  rviz:
+    image: husarion/rviz2:galactic
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ./config.rviz:/root/.rviz2/default.rviz
+    environment:
+      - DISPLAY
+      - LIBGL_ALWAYS_SOFTWARE=1
+

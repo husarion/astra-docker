@@ -3,7 +3,7 @@ name: Build/Publish Docker Image
 on:
   push:
     branches:
-      - 'main'
+      - 'ros1'
   
 jobs:
   build:
@@ -35,6 +35,6 @@ jobs:
         file: ./Dockerfile
         platforms: linux/arm64, linux/amd64, linux/arm/v7
         push: true
-        tags: husarion/astra
-        cache-from: type=registry,ref=husarion/astra
+        tags: husarion/astra:melodic
+        cache-from: type=registry,ref=husarion/astra:melodic
         cache-to: type=inline
