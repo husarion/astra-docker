@@ -1,27 +1,36 @@
-FROM ros:melodic-ros-core 
+ARG ROS_DISTRO=noetic
+
+FROM ros:$ROS_DISTRO
 
 SHELL ["/bin/bash", "-c"]
 
 RUN apt update && apt install -y \
+        libusb-1.0-0-dev \
+        git \
+        git-lfs \
         ros-$ROS_DISTRO-rgbd-launch \
-        ros-$ROS_DISTRO-libuvc \
+        ros-$ROS_DISTRO-camera-info-manager \
+        # ros-$ROS_DISTRO-libuvc \
         ros-$ROS_DISTRO-libuvc-camera \
-        ros-$ROS_DISTRO-libuvc-ros \
-        build-essential \
-        git && \
+        ros-$ROS_DISTRO-libuvc-ros && \
     apt clean && \
     rm -rf /var/lib/apt/lists/*
 
+RUN git clone https://github.com/libuvc/libuvc.git && \
+    cd libuvc && \
+    git checkout d3318ae && \
+    mkdir build && cd build && \
+    cmake .. && make -j4 && \
+    make install && \
+    ldconfig
+
 WORKDIR /ros_ws
 
-# create ROS2 workspace and clone Orbbec Astra package
 RUN mkdir -p src && \
-	git clone https://github.com/orbbec/ros_astra_camera --branch=master src/ros_astra_camera && \
-    cd src/ros_astra_camera && git checkout 78186a3ffbf8a67cfdf409abeebc68c402b406a0
+	git clone https://github.com/orbbec/ros_astra_camera --branch=master src/ros_astra_camera
 
-# build ROS2 workspace
+# # build ROS workspace
 RUN source /opt/ros/$ROS_DISTRO/setup.bash && \
-    catkin_make -DCATKIN_ENABLE_TESTING=0 -DCMAKE_BUILD_TYPE=Release --pkg astra_camera
+	catkin_make --pkg astra_camera
 
-# setup entrypoint
 COPY ./ros_entrypoint.sh /
