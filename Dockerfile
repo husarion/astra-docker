@@ -1,4 +1,4 @@
-ARG ROS_DISTRO=foxy
+ARG ROS_DISTRO=humble
 
 FROM ros:$ROS_DISTRO AS pkg-builder
 
@@ -11,7 +11,9 @@ RUN apt update && apt install -y \
         libgflags-dev \
         nlohmann-json3-dev \
         ros-$ROS_DISTRO-image-transport \
-        ros-$ROS_DISTRO-image-publisher && \
+        ros-$ROS_DISTRO-image-publisher \
+        ros-$ROS_DISTRO-rmw-fastrtps-cpp \
+        ros-$ROS_DISTRO-rmw-cyclonedds-cpp && \
     apt-get autoremove -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
@@ -57,39 +59,8 @@ RUN apt update && \
     # rosdep init && \
     rosdep update --rosdistro $ROS_DISTRO && \
     rosdep install -i --from-path src --rosdistro $ROS_DISTRO -y && \
-    colcon build --event-handlers  console_direct+  --cmake-args  -DCMAKE_BUILD_TYPE=Release
-
-
-FROM ros:$ROS_DISTRO-ros-core
-
-# select bash as default shell
-SHELL ["/bin/bash", "-c"]
-
-RUN apt update && apt install -y \
-        make \
-        libusb-1.0-0-dev \
-        libgflags-dev \
-        nlohmann-json3-dev \
-        ros-$ROS_DISTRO-tf2-msgs \
-        ros-$ROS_DISTRO-tf2-ros \
-        ros-$ROS_DISTRO-tf2-sensor-msgs \
-        ros-$ROS_DISTRO-tf2 \
-        ros-$ROS_DISTRO-image-transport \
-        ros-$ROS_DISTRO-image-publisher \
-        ros-$ROS_DISTRO-rmw-fastrtps-cpp \
-        ros-$ROS_DISTRO-rmw-cyclonedds-cpp && \
-    apt-get autoremove -y && \
-    apt-get clean && \
+    colcon build --event-handlers  console_direct+  --cmake-args  -DCMAKE_BUILD_TYPE=Release && \
     rm -rf /var/lib/apt/lists/*
-
-COPY --from=pkg-builder /glog-0.6.0 /glog-0.6.0
-COPY --from=pkg-builder /magic_enum-0.8.0 /magic_enum-0.8.0
-COPY --from=pkg-builder /libuvc /libuvc
-COPY --from=pkg-builder /ros2_ws /ros2_ws
-
-RUN cd /glog-0.6.0/build && make install && ldconfig && \
-    cd /magic_enum-0.8.0/build && make install && ldconfig && \
-    cd /libuvc/build && make install && ldconfig
 
 RUN echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> ~/.bashrc && \
 	echo "source /ros2_ws/install/setup.bash" >> ~/.bashrc
@@ -97,3 +68,43 @@ RUN echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> ~/.bashrc && \
 ENV RMW_IMPLEMENTATION=rmw_fastrtps_cpp
 
 COPY ros_entrypoint.sh /
+
+# The commented section doesn't work (2nd stage just for size optimization)
+# FROM ros:$ROS_DISTRO-ros-core
+
+# # select bash as default shell
+# SHELL ["/bin/bash", "-c"]
+
+# RUN apt update && apt install -y \
+#         build-essential \
+#         make \
+#         libusb-1.0-0-dev \
+#         libgflags-dev \
+#         nlohmann-json3-dev \
+#         ros-$ROS_DISTRO-tf2-msgs \
+#         ros-$ROS_DISTRO-tf2-ros \
+#         ros-$ROS_DISTRO-tf2-sensor-msgs \
+#         ros-$ROS_DISTRO-tf2 \
+#         ros-$ROS_DISTRO-image-transport \
+#         ros-$ROS_DISTRO-image-publisher \
+#         ros-$ROS_DISTRO-rmw-fastrtps-cpp \
+#         ros-$ROS_DISTRO-rmw-cyclonedds-cpp && \
+#     apt-get autoremove -y && \
+#     apt-get clean && \
+#     rm -rf /var/lib/apt/lists/*
+
+# COPY --from=pkg-builder /glog-0.6.0 /glog-0.6.0
+# COPY --from=pkg-builder /magic_enum-0.8.0 /magic_enum-0.8.0
+# COPY --from=pkg-builder /libuvc /libuvc
+# COPY --from=pkg-builder /ros2_ws /ros2_ws
+
+# RUN cd /glog-0.6.0/build && make install && ldconfig && \
+#     cd /magic_enum-0.8.0/build && make install && ldconfig && \
+#     cd /libuvc/build && make install && ldconfig
+
+# RUN echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> ~/.bashrc && \
+# 	echo "source /ros2_ws/install/setup.bash" >> ~/.bashrc
+
+# ENV RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+
+# COPY ros_entrypoint.sh /
