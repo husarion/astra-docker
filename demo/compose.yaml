@@ -3,7 +3,7 @@
 # $ docker compose up
 
 services:
-  astra_plus:
+  astra:
     build:
       context: ..
       dockerfile: Dockerfile
