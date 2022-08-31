@@ -5,6 +5,8 @@ FROM ros:galactic
 SHELL ["/bin/bash", "-c"]
 
 RUN apt update && apt install -y \
+        libusb-1.0-0-dev \
+        git \
         wget \
         libgflags-dev \
         nlohmann-json3-dev \
@@ -32,15 +34,27 @@ RUN wget -c https://github.com/Neargye/magic_enum/archive/refs/tags/v0.8.0.tar.g
     make install && \
     ldconfig
 
+RUN git clone https://github.com/libuvc/libuvc.git && \
+    cd libuvc && \
+    # git checkout d3318ae && \
+    mkdir build && cd build && \
+    cmake .. && make -j4 && \
+    make install && \
+    ldconfig
+
 WORKDIR /ros2_ws
 
-RUN wget -c https://dl.orbbec3d.com/dist/orbbecsdk/ROS2/v1.0/OrbbecSDK_ROS2_v1.0.4_20220713_776487_linux_release.tar.gz \
-        -O OrbbecSDK_ROS2.tar.gz && \
-    tar -xf OrbbecSDK_ROS2.tar.gz && \
-    cp -r OrbbecSDK_ROS2/* /ros2_ws && \
-    rm -rf OrbbecSDK_ROS2*
+RUN wget -c https://dl.orbbec3d.com/dist/openni2/ROS2/OpenNI_SDK_ROS2_v1.0.2_20220809_b32e47_linux.tar.gz \
+        -O OpenNI_SDK_ROS2.tar.gz && \
+    tar -xf OpenNI_SDK_ROS2.tar.gz && \
+    mkdir src && \
+    mv ros2_astra_camera src && \
+    rm -rf OpenNI_SDK_ROS2*
 
 RUN source "/opt/ros/$ROS_DISTRO/setup.bash" && \
     colcon build --event-handlers  console_direct+  --cmake-args  -DCMAKE_BUILD_TYPE=Release
+
+RUN echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> ~/.bashrc && \
+	echo "source /ros2_ws/install/setup.bash" >> ~/.bashrc
 
 COPY ros_entrypoint.sh /ros_entrypoint.sh

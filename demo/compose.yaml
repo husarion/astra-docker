@@ -12,7 +12,10 @@ services:
       dockerfile: Dockerfile
     devices:
       - /dev/bus/usb/
-    command: ros2 launch orbbec_camera ob_camera.launch.py
+    volumes:
+      - ./default.rviz:/root/.rviz2/default.rviz
+    command: ros2 launch astra_camera astra_mini.launch.py
+    # command: sleep 3600
 
   rviz:
     image: husarion/rviz2:galactic
