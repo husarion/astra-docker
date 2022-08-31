@@ -17,7 +17,7 @@ depth_fps: 30
 enable_depth: true
 
 # open depth to color alignment （hardware alignment）
-depth_align: false
+depth_align: true
 serial_number: ""
 number_of_devices: 1
 
