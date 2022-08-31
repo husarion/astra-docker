@@ -44,6 +44,7 @@ RUN git clone https://github.com/libuvc/libuvc.git && \
 
 WORKDIR /ros2_ws
 
+# https://orbbec3d.com/index/download.html
 RUN wget -c https://dl.orbbec3d.com/dist/openni2/ROS2/OpenNI_SDK_ROS2_v1.0.2_20220809_b32e47_linux.tar.gz \
         -O OpenNI_SDK_ROS2.tar.gz && \
     tar -xf OpenNI_SDK_ROS2.tar.gz && \

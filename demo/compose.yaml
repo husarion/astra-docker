@@ -1,9 +1,6 @@
 # Quick Start
-# just plug Orbbec Astra+ to your laptop and launch:
+# just plug Orbbec Astra to your laptop and launch:
 # $ docker compose up
-#
-# Warning!!!
-#  Works only with Astra+, not with regular Astra cameras we use in ROSbots
 
 services:
   astra_plus:
@@ -13,14 +10,14 @@ services:
     devices:
       - /dev/bus/usb/
     volumes:
-      - ./default.rviz:/root/.rviz2/default.rviz
+      - ./astra_params.yaml:/ros2_ws/install/astra_camera/share/astra_camera/params/astra_mini_params.yaml
     command: ros2 launch astra_camera astra_mini.launch.py
-    # command: sleep 3600
 
   rviz:
     image: husarion/rviz2:humble
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ./default.rviz:/root/.rviz2/default.rviz
     environment:
       - DISPLAY
       - LIBGL_ALWAYS_SOFTWARE=1
