@@ -18,7 +18,7 @@ services:
     # command: sleep 3600
 
   rviz:
-    image: husarion/rviz2:galactic
+    image: husarion/rviz2:humble
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
     environment:

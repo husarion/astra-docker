@@ -1,6 +1,6 @@
 # docker run --rm -it -v ${PWD}:/ros2_ws ros:galactic bash
 
-FROM ros:galactic
+FROM ros:humble
 
 SHELL ["/bin/bash", "-c"]
 
@@ -10,8 +10,8 @@ RUN apt update && apt install -y \
         wget \
         libgflags-dev \
         nlohmann-json3-dev \
-        ros-galactic-image-transport \
-        ros-galactic-image-publisher && \
+        ros-$ROS_DISTRO-image-transport \
+        ros-$ROS_DISTRO-image-publisher && \
     apt-get autoremove -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
@@ -51,7 +51,11 @@ RUN wget -c https://dl.orbbec3d.com/dist/openni2/ROS2/OpenNI_SDK_ROS2_v1.0.2_202
     mv ros2_astra_camera src && \
     rm -rf OpenNI_SDK_ROS2*
 
-RUN source "/opt/ros/$ROS_DISTRO/setup.bash" && \
+RUN apt update && \
+    source "/opt/ros/$ROS_DISTRO/setup.bash" && \
+    # rosdep init && \
+    rosdep update --rosdistro $ROS_DISTRO && \
+    rosdep install -i --from-path src --rosdistro $ROS_DISTRO -y && \
     colcon build --event-handlers  console_direct+  --cmake-args  -DCMAKE_BUILD_TYPE=Release
 
 RUN echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> ~/.bashrc && \
