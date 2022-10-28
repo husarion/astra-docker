@@ -7,7 +7,17 @@ on:
   
 jobs:
   build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - ros-distro: kinetic
+            platforms: "linux/amd64, linux/arm64, linux/arm/v7"
+          - ros-distro: melodic
+            platforms: "linux/amd64, linux/arm64, linux/arm/v7"
+          - ros-distro: noetic
+            platforms: "linux/amd64, linux/arm64"
 
     steps:
     - name: Checkout
@@ -33,8 +43,9 @@ jobs:
       with:
         context: .
         file: ./Dockerfile
-        platforms: linux/arm64, linux/amd64, linux/arm/v7
+        platforms: ${{ matrix.platforms }}
+        build-args: ROS_DISTRO=${{ matrix.ros-distro }}
         push: true
-        tags: husarion/astra:melodic
-        cache-from: type=registry,ref=husarion/astra:melodic
+        tags: husarion/astra:${{ matrix.ros-distro }}
+        cache-from: type=registry,ref=husarion/astra:${{ matrix.ros-distro }}
         cache-to: type=inline
