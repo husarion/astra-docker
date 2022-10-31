@@ -36,4 +36,9 @@ RUN mkdir -p src && \
 RUN source /opt/ros/$ROS_DISTRO/setup.bash && \
 	catkin_make --pkg astra_camera
 
+RUN echo ". /opt/ros/$ROS_DISTRO/setup.bash" >> ~/.bashrc && \
+    echo ". /ros_ws/devel/setup.bash" >> ~/.bashrc
+
 COPY ./ros_entrypoint.sh /
+
+STOPSIGNAL SIGINT
