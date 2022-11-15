@@ -32,6 +32,9 @@ jobs:
     - name: Print branch name
       run: echo ${{ github.ref_name}}
 
+    - name: Set SHORT_DATE env
+      run: echo "SHORT_DATE=$(date +%y-%m-%d)" >> $GITHUB_ENV
+
     - name: Build and push (production)
       if: github.ref_name == 'ros2'
       uses: docker/build-push-action@v2
@@ -39,7 +42,9 @@ jobs:
         platforms: linux/arm64, linux/amd64
         build-args: ROS_DISTRO=${{ matrix.ros-distro }}
         push: true
-        tags: husarion/astra:${{ matrix.ros-distro }}
+        tags: |
+          husarion/astra:${{ matrix.ros-distro }}
+          husarion/astra:${{ matrix.ros-distro }}-${{ env.SHORT_DATE }}
         cache-from: type=registry,ref=husarion/astra:${{ matrix.ros-distro }}
         cache-to: type=inline
 
