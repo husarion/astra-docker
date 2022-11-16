@@ -51,8 +51,6 @@ jobs:
       if: github.ref_name == 'ros2' && github.event_name == 'workflow_dispatch'
       uses: docker/build-push-action@v2
       with:
-        context: .
-        file: ./Dockerfile.hardware
         platforms: ${{ matrix.platforms }}
         push: true
         build-args: |
@@ -65,8 +63,6 @@ jobs:
       if: github.ref_name == 'ros2' && github.event_name != 'workflow_dispatch'
       uses: docker/build-push-action@v2
       with:
-        context: .
-        file: ./Dockerfile.hardware
         platforms: ${{ matrix.platforms }}
         push: true
         build-args: |
@@ -77,8 +73,6 @@ jobs:
       if: github.ref_name != 'ros2'
       uses: docker/build-push-action@v2
       with:
-        context: .
-        file: ./Dockerfile.hardware
         platforms: ${{ matrix.platforms }}
         push: true
         build-args: |
