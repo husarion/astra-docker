@@ -1,33 +1,27 @@
 name: Build/Publish Docker Image 
 
-on: push
-
+on: 
+  push:
+  workflow_dispatch:
+  
 jobs:
   build:
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
-        ros-distro: [foxy, galactic, humble]
+        include:
+          - ros-distro: foxy
+            platforms: "linux/amd64, linux/arm64"
+          - ros-distro: galactic
+            platforms: "linux/amd64, linux/arm64"
+          - ros-distro: humble
+            platforms: "linux/amd64, linux/arm64"
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v1
 
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v1
-      
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
-      with:
-        version: latest
-    
-    - name: Login to Docker Registry
-      uses: docker/login-action@v1
-      with:
-        registry: docker.io
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - name: Print event name
+      run: echo "Event name ${{ github.event_name }}"
 
     - name: Print branch name
       run: echo ${{ github.ref_name}}
@@ -35,26 +29,58 @@ jobs:
     - name: Set SHORT_DATE env
       run: echo "SHORT_DATE=$(date +%y-%m-%d)" >> $GITHUB_ENV
 
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+      with:
+        version: latest
+
+    - name: Login to Docker Registry
+      uses: docker/login-action@v1
+      with:
+        registry: docker.io
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
     - name: Build and push (production)
-      if: github.ref_name == 'ros2'
+      if: github.ref_name == 'ros2' && github.event_name == 'workflow_dispatch'
       uses: docker/build-push-action@v2
       with:
-        platforms: linux/arm64, linux/amd64
-        build-args: ROS_DISTRO=${{ matrix.ros-distro }}
+        context: .
+        file: ./Dockerfile.hardware
+        platforms: ${{ matrix.platforms }}
         push: true
+        build-args: |
+          ROS_DISTRO=${{ matrix.ros-distro }}
         tags: |
           husarion/astra:${{ matrix.ros-distro }}
           husarion/astra:${{ matrix.ros-distro }}-${{ env.SHORT_DATE }}
-        cache-from: type=registry,ref=husarion/astra:${{ matrix.ros-distro }}
-        cache-to: type=inline
 
-    - name: Build and push (testing)
+    - name: Build and push (latest only)
+      if: github.ref_name == 'ros2' && github.event_name != 'workflow_dispatch'
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: ./Dockerfile.hardware
+        platforms: ${{ matrix.platforms }}
+        push: true
+        build-args: |
+          ROS_DISTRO=${{ matrix.ros-distro }}
+        tags: husarion/astra:${{ matrix.ros-distro }}
+
+    - name: Build and push (development)
       if: github.ref_name != 'ros2'
       uses: docker/build-push-action@v2
       with:
-        platforms: linux/arm64, linux/amd64
-        build-args: ROS_DISTRO=${{ matrix.ros-distro }}
+        context: .
+        file: ./Dockerfile.hardware
+        platforms: ${{ matrix.platforms }}
         push: true
-        tags: husarion/astra:${{ matrix.ros-distro }}-${{ github.head_ref || github.ref_name }} 
-        cache-from: type=registry,ref=husarion/astra:${{ matrix.ros-distro }}-${{ github.head_ref || github.ref_name }} 
-        cache-to: type=inline
+        build-args: |
+          ROS_DISTRO=${{ matrix.ros-distro }}
+        tags: husarion/astra:${{ matrix.ros-distro }}-${{ github.head_ref || github.ref_name }}
