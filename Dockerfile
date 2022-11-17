@@ -13,7 +13,8 @@ RUN apt update && apt install -y \
         ros-$ROS_DISTRO-image-transport \
         ros-$ROS_DISTRO-image-publisher \
         ros-$ROS_DISTRO-rmw-fastrtps-cpp \
-        ros-$ROS_DISTRO-rmw-cyclonedds-cpp && \
+        ros-$ROS_DISTRO-rmw-cyclonedds-cpp \
+		gettext-base && \
     apt-get autoremove -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
