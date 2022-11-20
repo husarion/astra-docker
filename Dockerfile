@@ -1,6 +1,6 @@
 ARG ROS_DISTRO=humble
 
-FROM ros:$ROS_DISTRO AS pkg-builder
+FROM husarnet/ros:$ROS_DISTRO-ros-base AS pkg-builder
 
 SHELL ["/bin/bash", "-c"]
 
@@ -11,10 +11,7 @@ RUN apt update && apt install -y \
         libgflags-dev \
         nlohmann-json3-dev \
         ros-$ROS_DISTRO-image-transport \
-        ros-$ROS_DISTRO-image-publisher \
-        ros-$ROS_DISTRO-rmw-fastrtps-cpp \
-        ros-$ROS_DISTRO-rmw-cyclonedds-cpp \
-		gettext-base && \
+        ros-$ROS_DISTRO-image-publisher && \
     apt-get autoremove -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
@@ -65,10 +62,6 @@ RUN apt update && \
 
 RUN echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> ~/.bashrc && \
 	echo "source /ros2_ws/install/setup.bash" >> ~/.bashrc
-
-ENV RMW_IMPLEMENTATION=rmw_fastrtps_cpp
-
-COPY ros_entrypoint.sh /
 
 # The commented section doesn't work (2nd stage just for size optimization)
 # FROM ros:$ROS_DISTRO-ros-core
