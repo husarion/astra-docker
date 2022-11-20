@@ -60,6 +60,8 @@ RUN apt update && \
     colcon build --event-handlers  console_direct+  --cmake-args  -DCMAKE_BUILD_TYPE=Release && \
     rm -rf /var/lib/apt/lists/*
 
+WORKDIR /
+
 RUN echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> ~/.bashrc && \
 	echo "source /ros2_ws/install/setup.bash" >> ~/.bashrc
 
