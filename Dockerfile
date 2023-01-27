@@ -62,6 +62,8 @@ RUN apt update && \
 
 WORKDIR /
 
+RUN echo $(cat /ros2_ws/src/ros2_astra_camera/astra_camera/package.xml | grep '<version>' | sed -r 's/.*<version>([0-9]+.[0-9]+.[0-9]+)<\/version>/\1/g') > /version.txt
+
 RUN echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> ~/.bashrc && \
 	echo "source /ros2_ws/install/setup.bash" >> ~/.bashrc
 
