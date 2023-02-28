@@ -3,6 +3,8 @@ ARG PREFIX=
 
 FROM husarnet/ros:${PREFIX}${ROS_DISTRO}-ros-base AS pkg-builder
 
+ARG PREFIX
+
 SHELL ["/bin/bash", "-c"]
 
 RUN apt update && apt install -y \
