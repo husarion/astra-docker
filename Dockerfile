@@ -1,6 +1,7 @@
 ARG ROS_DISTRO=humble
+ARG PREFIX=
 
-FROM husarnet/ros:$ROS_DISTRO-ros-base AS pkg-builder
+FROM husarnet/ros:${PREFIX}${ROS_DISTRO}-ros-base AS pkg-builder
 
 SHELL ["/bin/bash", "-c"]
 
@@ -52,8 +53,11 @@ RUN wget -c https://dl.orbbec3d.com/dist/openni2/ROS2/OpenNI_SDK_ROS2_v1.0.2_202
     mv ros2_astra_camera src && \
     rm -rf OpenNI_SDK_ROS2*
 
+ENV MYDISTRO=${PREFIX:-ros}
+RUN [[ "$PREFIX" = "vulcanexus-" ]] && export MYDISTRO="vulcanexus"
+
 RUN apt update && \
-    source "/opt/ros/$ROS_DISTRO/setup.bash" && \
+    source "/opt/$MYDISTRO/$ROS_DISTRO/setup.bash" && \
     # rosdep init && \
     rosdep update --rosdistro $ROS_DISTRO && \
     rosdep install -i --from-path src --rosdistro $ROS_DISTRO -y && \
@@ -64,8 +68,6 @@ WORKDIR /
 
 RUN echo $(cat /ros2_ws/src/ros2_astra_camera/astra_camera/package.xml | grep '<version>' | sed -r 's/.*<version>([0-9]+.[0-9]+.[0-9]+)<\/version>/\1/g') > /version.txt
 
-RUN echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> ~/.bashrc && \
-	echo "source /ros2_ws/install/setup.bash" >> ~/.bashrc
 
 # The commented section doesn't work (2nd stage just for size optimization)
 # FROM ros:$ROS_DISTRO-ros-core
