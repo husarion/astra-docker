@@ -53,12 +53,12 @@ RUN wget -c https://dl.orbbec3d.com/dist/openni2/ROS2/OpenNI_SDK_ROS2_v1.0.2_202
     mv ros2_astra_camera src && \
     rm -rf OpenNI_SDK_ROS2*
 
-ENV MYDISTRO=${PREFIX:-ros}
-RUN [[ "$PREFIX" = "vulcanexus-" ]] && export MYDISTRO="vulcanexus"
-
-RUN apt update && \
+RUN MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
+    apt update && \
     source "/opt/$MYDISTRO/$ROS_DISTRO/setup.bash" && \
-    # rosdep init && \
+    # without this line (using vulcanexus base image) rosdep init throws error: "ERROR: default sources list file already exists:"
+    rm -rf /etc/ros/rosdep/sources.list.d/20-default.list && \
+    rosdep init && \
     rosdep update --rosdistro $ROS_DISTRO && \
     rosdep install -i --from-path src --rosdistro $ROS_DISTRO -y && \
     colcon build --event-handlers  console_direct+  --cmake-args  -DCMAKE_BUILD_TYPE=Release && \
