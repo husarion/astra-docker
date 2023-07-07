@@ -14,7 +14,9 @@ RUN apt update && apt install -y \
         libgflags-dev \
         nlohmann-json3-dev \
         ros-$ROS_DISTRO-image-transport \
-        ros-$ROS_DISTRO-image-publisher && \
+        ros-$ROS_DISTRO-image-transport-plugins \
+        ros-$ROS_DISTRO-image-publisher \
+        && \
     apt-get autoremove -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
