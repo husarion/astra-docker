@@ -72,6 +72,8 @@ WORKDIR /
 
 RUN echo $(cat /ros2_ws/src/ros2_astra_camera/astra_camera/package.xml | grep '<version>' | sed -r 's/.*<version>([0-9]+.[0-9]+.[0-9]+)<\/version>/\1/g') > /version.txt
 
+COPY rosbot-astra-params.yaml /ros2_ws/install/astra_camera/share/astra_camera/params/astra_mini_params.yaml
+
 # Without this line Astra doesn't stop the Lidar on container shutdown. Default is SIGTERM. 
 STOPSIGNAL SIGINT
 
@@ -81,7 +83,7 @@ STOPSIGNAL SIGINT
 # # select bash as default shell
 # SHELL ["/bin/bash", "-c"]
 
-# RUN apt update && apt install -y \
+# RUN apt updarosbot-astra-paramste && apt install -y \
 #         build-essential \
 #         make \
 #         libusb-1.0-0-dev \
