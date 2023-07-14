@@ -72,6 +72,8 @@ WORKDIR /
 
 RUN echo $(cat /ros2_ws/src/ros2_astra_camera/astra_camera/package.xml | grep '<version>' | sed -r 's/.*<version>([0-9]+.[0-9]+.[0-9]+)<\/version>/\1/g') > /version.txt
 
+# Without this line Astra doesn't stop the Lidar on container shutdown. Default is SIGTERM. 
+STOPSIGNAL SIGINT
 
 # The commented section doesn't work (2nd stage just for size optimization)
 # FROM ros:$ROS_DISTRO-ros-core
