@@ -57,6 +57,8 @@ RUN wget -c https://dl.orbbec3d.com/dist/openni2/ROS2/OpenNI_SDK_ROS2_v1.0.2_202
     mv ros2_astra_camera src && \
     rm -rf OpenNI_SDK_ROS2*
 
+COPY ./ob_camera_node.cpp /ros2_ws/src/ros2_astra_camera/astra_camera/src/ob_camera_node.cpp
+
 RUN MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
     apt update && \
     source "/opt/$MYDISTRO/$ROS_DISTRO/setup.bash" && \
@@ -74,7 +76,7 @@ RUN echo $(cat /ros2_ws/src/ros2_astra_camera/astra_camera/package.xml | grep '<
 
 COPY rosbot-astra-params.yaml /ros2_ws/install/astra_camera/share/astra_camera/params/astra_mini_params.yaml
 
-# Without this line Astra doesn't stop the Lidar on container shutdown. Default is SIGTERM. 
+# Without this line Astra doesn't stop the Lidar on container shutdown. Default is SIGTERM.
 STOPSIGNAL SIGINT
 
 # The commented section doesn't work (2nd stage just for size optimization)
