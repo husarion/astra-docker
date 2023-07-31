@@ -75,7 +75,7 @@ RUN echo $(cat /ros2_ws/src/ros2_astra_camera/astra_camera/package.xml | grep '<
 
 COPY rosbot-astra-params.yaml /ros2_ws/install/astra_camera/share/astra_camera/params/astra_mini_params.yaml
 
-# Without this line Astra doesn't stop the Lidar on container shutdown. Default is SIGTERM.
+# Without this line Astra doesn't stop the camera on container shutdown. Default is SIGTERM.
 STOPSIGNAL SIGINT
 
 # The commented section doesn't work (2nd stage just for size optimization)
