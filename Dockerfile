@@ -56,7 +56,11 @@ RUN wget -c https://dl.orbbec3d.com/dist/openni2/ROS2/OpenNI_SDK_ROS2_v1.0.2_202
     mv ros2_astra_camera src && \
     rm -rf OpenNI_SDK_ROS2*
 
-COPY ./ob_camera_node.cpp /ros2_ws/src/ros2_astra_camera/astra_camera/src/ob_camera_node.cpp
+# Fix TF parameters
+RUN cd /ros2_ws/src/ros2_astra_camera/astra_camera/src/ && \
+    sed -i \
+    's/calcAndPublishStaticTransform();/if (!publish_tf_) return; calcAndPublishStaticTransform();/g' \
+    ob_camera_node.cpp
 
 RUN MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
     apt update && \
