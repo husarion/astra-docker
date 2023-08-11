@@ -5,7 +5,7 @@ color_fps: 30
 enable_color: true
 
 # IR camera width/height/FPS
-ir_width: 640 
+ir_width: 640
 ir_height: 480
 ir_fps: 30
 enable_ir: true
@@ -37,7 +37,7 @@ depth_roi.y : -1
 depth_roi.width: -1
 depth_roi.height: -1
 
-# depth scale times 
+# depth scale times
 depth_scale : 1
 publish_tf: true
 tf_publish_rate: 10.0

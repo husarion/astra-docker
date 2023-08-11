@@ -14,6 +14,7 @@ RUN apt update && apt install -y \
         libgflags-dev \
         nlohmann-json3-dev \
         ros-$ROS_DISTRO-image-transport \
+        ros-$ROS_DISTRO-image-transport-plugins \
         ros-$ROS_DISTRO-image-publisher && \
     apt-get autoremove -y && \
     apt-get clean && \
@@ -55,6 +56,12 @@ RUN wget -c https://dl.orbbec3d.com/dist/openni2/ROS2/OpenNI_SDK_ROS2_v1.0.2_202
     mv ros2_astra_camera src && \
     rm -rf OpenNI_SDK_ROS2*
 
+# Fix TF parameters
+RUN cd /ros2_ws/src/ros2_astra_camera/astra_camera/src/ && \
+    sed -i \
+    's/calcAndPublishStaticTransform();/if (!publish_tf_) return; calcAndPublishStaticTransform();/g' \
+    ob_camera_node.cpp
+
 RUN MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
     apt update && \
     source "/opt/$MYDISTRO/$ROS_DISTRO/setup.bash" && \
@@ -71,6 +78,9 @@ WORKDIR /
 RUN echo $(cat /ros2_ws/src/ros2_astra_camera/astra_camera/package.xml | grep '<version>' | sed -r 's/.*<version>([0-9]+.[0-9]+.[0-9]+)<\/version>/\1/g') > /version.txt
 
 COPY rosbot-astra-params.yaml /ros2_ws/install/astra_camera/share/astra_camera/params/astra_mini_params.yaml
+
+# Without this line Astra doesn't stop the camera on container shutdown. Default is SIGTERM.
+STOPSIGNAL SIGINT
 
 # The commented section doesn't work (2nd stage just for size optimization)
 # FROM ros:$ROS_DISTRO-ros-core
