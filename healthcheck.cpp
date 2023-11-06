@@ -26,7 +26,7 @@ int main(int argc, char* argv[])
 {
   rclcpp::init(argc, argv);
   auto node = rclcpp::Node::make_shared("healthcheck_node");
-  auto sub = node->create_subscription<sensor_msgs::msg::Image>(TOPIC_NAME, 10, msg_callback);
+  auto sub = node->create_subscription<sensor_msgs::msg::Image>(TOPIC_NAME, rclcpp::SensorDataQoS(), msg_callback);
   auto timer = node->create_wall_timer(TIMEOUT, timeout_callback);
 
   rclcpp::spin(node);
