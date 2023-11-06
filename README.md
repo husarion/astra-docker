@@ -26,7 +26,7 @@ cd astra-docker/demo
 **2. Activate the Device**
 
 ```bash
-docker compose up rplidar
+docker compose up astra
 ```
 
 **3. Launch Visualization**
