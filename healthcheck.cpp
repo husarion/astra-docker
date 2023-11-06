@@ -1,5 +1,5 @@
 #include "rclcpp/rclcpp.hpp"
-#include "sensor_msgs/msg/laser_scan.hpp"
+#include "sensor_msgs/msg/image.hpp"
 #include "cstdlib"
 
 using namespace std::chrono_literals;
@@ -9,11 +9,11 @@ using namespace std::chrono_literals;
 
 int msg_received = EXIT_FAILURE;
 
-void msg_callback(const sensor_msgs::msg::LaserScan::SharedPtr msg)
+void msg_callback(const sensor_msgs::msg::Image::SharedPtr msg)
 {
-    std::cout << "Message received" << std::endl;
-    msg_received = EXIT_SUCCESS;
-    rclcpp::shutdown();
+  std::cout << "Message received" << std::endl;
+  msg_received = EXIT_SUCCESS;
+  rclcpp::shutdown();
 }
 
 void timeout_callback()
@@ -26,9 +26,7 @@ int main(int argc, char* argv[])
 {
   rclcpp::init(argc, argv);
   auto node = rclcpp::Node::make_shared("healthcheck_node");
-  auto sub = node->create_subscription<sensor_msgs::msg::LaserScan>(TOPIC_NAME, 10, msg_callback);
-
-  // Set a timer for the timeout duration (e.g., 5 seconds)
+  auto sub = node->create_subscription<sensor_msgs::msg::Image>(TOPIC_NAME, 10, msg_callback);
   auto timer = node->create_wall_timer(TIMEOUT, timeout_callback);
 
   rclcpp::spin(node);
