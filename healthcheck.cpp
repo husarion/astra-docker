@@ -25,7 +25,7 @@ void timeout_callback()
 int main(int argc, char* argv[])
 {
   rclcpp::init(argc, argv);
-  auto node = rclcpp::Node::make_shared("listener_scan");
+  auto node = rclcpp::Node::make_shared("healthcheck_node");
   auto sub = node->create_subscription<sensor_msgs::msg::LaserScan>(TOPIC_NAME, 10, msg_callback);
 
   // Set a timer for the timeout duration (e.g., 5 seconds)
