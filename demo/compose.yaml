@@ -8,6 +8,8 @@ services:
     # build:
     #   context: ..
     #   dockerfile: Dockerfile
+    network_mode: host
+    ipc: host
     devices:
       - /dev/bus/usb/
     volumes:
@@ -16,6 +18,8 @@ services:
 
   rviz:
     image: husarion/rviz2:humble
+    network_mode: host
+    ipc: host
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - ./default.rviz:/root/.rviz2/default.rviz
