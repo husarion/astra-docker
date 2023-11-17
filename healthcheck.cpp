@@ -43,7 +43,7 @@ int main(int argc, char* argv[])
 {
   rclcpp::init(argc, argv);
   auto node = rclcpp::Node::make_shared("healthcheck_node");
-  auto sub = node->create_subscription<sensor_msgs::msg::Image>("/camera/color/image_raw", rclcpp::SensorDataQoS(), msg_callback);
+  auto sub = node->create_subscription<sensor_msgs::msg::Image>("camera/color/image_raw", rclcpp::SensorDataQoS(), msg_callback);
 
   while (rclcpp::ok())
   {
