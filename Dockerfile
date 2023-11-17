@@ -91,7 +91,7 @@ WORKDIR /
 RUN echo $(cat /ros2_ws/src/ros2_astra_camera/astra_camera/package.xml | grep '<version>' | sed -r 's/.*<version>([0-9]+.[0-9]+.[0-9]+)<\/version>/\1/g') > /version.txt
 
 COPY ./healthcheck.sh /
-HEALTHCHECK --interval=10s --timeout=2s --start-period=5s --retries=5 \
+HEALTHCHECK --interval=10s --timeout=3s --start-period=5s --retries=5 \
     CMD ["/healthcheck.sh"]
 
 COPY rosbot-astra-params.yaml /ros2_ws/install/astra_camera/share/astra_camera/params/astra_mini_params.yaml
