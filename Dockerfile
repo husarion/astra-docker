@@ -62,6 +62,18 @@ RUN cd /ros2_ws/src/ros2_astra_camera/astra_camera/src/ && \
     's/calcAndPublishStaticTransform();/if (!publish_tf_) return; calcAndPublishStaticTransform();/g' \
     ob_camera_node.cpp
 
+# Create health check package
+RUN cd src/ && \
+    source /opt/ros/$ROS_DISTRO/setup.bash && \
+    ros2 pkg create healthcheck_pkg --build-type ament_cmake --dependencies rclcpp sensor_msgs && \
+    sed -i '/find_package(sensor_msgs REQUIRED)/a \
+            add_executable(healthcheck_node src/healthcheck.cpp)\n \
+            ament_target_dependencies(healthcheck_node rclcpp sensor_msgs)\n \
+            install(TARGETS healthcheck_node DESTINATION lib/${PROJECT_NAME})' \
+            /ros2_ws/src/healthcheck_pkg/CMakeLists.txt
+
+COPY ./healthcheck.cpp /ros2_ws/src/healthcheck_pkg/src/
+
 RUN MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
     apt update && \
     source "/opt/$MYDISTRO/$ROS_DISTRO/setup.bash" && \
@@ -76,6 +88,20 @@ RUN MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
 WORKDIR /
 
 RUN echo $(cat /ros2_ws/src/ros2_astra_camera/astra_camera/package.xml | grep '<version>' | sed -r 's/.*<version>([0-9]+.[0-9]+.[0-9]+)<\/version>/\1/g') > /version.txt
+
+RUN if [ -f "/ros_entrypoint.sh" ]; then \
+        sed -i '/test -f "\/ros2_ws\/install\/setup.bash" && source "\/ros2_ws\/install\/setup.bash"/a \
+        ros2 run healthcheck_pkg healthcheck_node &' \
+        /ros_entrypoint.sh; \
+    else \
+        sed -i '/test -f "\/ros2_ws\/install\/setup.bash" && source "\/ros2_ws\/install\/setup.bash"/a \
+        ros2 run healthcheck_pkg healthcheck_node &' \
+        /vulcanexus_entrypoint.sh; \
+    fi
+
+COPY ./healthcheck.sh /
+HEALTHCHECK --interval=7s --timeout=2s  --start-period=5s --retries=5 \
+    CMD ["/healthcheck.sh"]
 
 COPY rosbot-astra-params.yaml /ros2_ws/install/astra_camera/share/astra_camera/params/astra_mini_params.yaml
 
