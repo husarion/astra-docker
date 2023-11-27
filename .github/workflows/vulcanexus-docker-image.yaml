@@ -1,6 +1,6 @@
-name: Build/Publish Vulcanexus Docker Image 
+name: Build/Publish Vulcanexus Docker Image
 
-on: 
+on:
   workflow_dispatch:
     inputs:
       build_type:
@@ -36,7 +36,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ros_distro: ["humble", "iron"]
+        ros_distro: ["humble"] # "iron" no supported
 
     steps:
 
