@@ -82,13 +82,14 @@ RUN MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
     rosdep init && \
     rosdep update --rosdistro $ROS_DISTRO && \
     rosdep install -i --from-path src --rosdistro $ROS_DISTRO -y && \
-    colcon build --event-handlers  console_direct+  --cmake-args  -DCMAKE_BUILD_TYPE=Release && \
+    colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release && \
+    # Save version
+    echo $(cat /ros2_ws/src/ros2_astra_camera/astra_camera/package.xml | grep '<version>' | sed -r 's/.*<version>([0-9]+.[0-9]+.[0-9]+)<\/version>/\1/g') > /version.txt && \
+    # Size optimalization
+    rm -rf build log src && \
     rm -rf /var/lib/apt/lists/*
 
-WORKDIR /
-
-RUN echo $(cat /ros2_ws/src/ros2_astra_camera/astra_camera/package.xml | grep '<version>' | sed -r 's/.*<version>([0-9]+.[0-9]+.[0-9]+)<\/version>/\1/g') > /version.txt
-
+# Run healthcheck in background
 RUN if [ -f "/ros_entrypoint.sh" ]; then \
         sed -i '/test -f "\/ros2_ws\/install\/setup.bash" && source "\/ros2_ws\/install\/setup.bash"/a \
         ros2 run healthcheck_pkg healthcheck_node &' \
@@ -100,7 +101,7 @@ RUN if [ -f "/ros_entrypoint.sh" ]; then \
     fi
 
 COPY ./healthcheck.sh /
-HEALTHCHECK --interval=7s --timeout=2s  --start-period=5s --retries=5 \
+HEALTHCHECK --interval=5s --timeout=2s  --start-period=5s --retries=4 \
     CMD ["/healthcheck.sh"]
 
 COPY rosbot-astra-params.yaml /ros2_ws/install/astra_camera/share/astra_camera/params/astra_mini_params.yaml
