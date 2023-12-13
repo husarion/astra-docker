@@ -12,6 +12,9 @@ services:
     ipc: host
     devices:
       - /dev/bus/usb/
+    environment:
+      - SENSOR_NAME=camera
+      - ROBOT_NAMESPACE=robot1
     volumes:
       - ./astra_params.yaml:/ros2_ws/install/astra_camera/share/astra_camera/params/astra_mini_params.yaml
     command: ros2 launch astra_camera astra_mini.launch.py
@@ -26,5 +29,6 @@ services:
     environment:
       - DISPLAY
       - LIBGL_ALWAYS_SOFTWARE=1
+    command: ros2 run rviz2 rviz2 --ros-args -r /tf:=tf -r /tf_static:=tf_static -r __ns:=/robot1
 
 

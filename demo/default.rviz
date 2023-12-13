@@ -64,7 +64,7 @@ Visualization Manager:
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Best Effort
-        Value: /camera/depth/image_raw
+        Value: camera/depth/image_raw
       Value: true
     - Class: rviz_default_plugins/Image
       Enabled: true
@@ -78,7 +78,7 @@ Visualization Manager:
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Best Effort
-        Value: /camera/color/image_raw
+        Value: camera/color/image_raw
       Value: true
     - Alpha: 1
       Autocompute Intensity Bounds: true
@@ -110,7 +110,7 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Best Effort
-        Value: /camera/depth/color/points
+        Value: camera/depth/color/points
       Use Fixed Frame: true
       Use rainbow: true
       Value: true

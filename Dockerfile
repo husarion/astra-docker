@@ -100,11 +100,13 @@ RUN if [ -f "/ros_entrypoint.sh" ]; then \
         /vulcanexus_entrypoint.sh; \
     fi
 
-COPY ./healthcheck.sh /
-HEALTHCHECK --interval=5s --timeout=2s  --start-period=5s --retries=4 \
-    CMD ["/healthcheck.sh"]
-
+# Add namespaca to launch file
+COPY ./astra_mini.launch.py /ros2_ws/install/astra_camera/share/astra_camera/launch/astra_mini.launch.py
 COPY rosbot-astra-params.yaml /ros2_ws/install/astra_camera/share/astra_camera/params/astra_mini_params.yaml
+
+COPY ./healthcheck.sh /
+HEALTHCHECK --interval=3s --timeout=1s  --start-period=10s --retries=1 \
+    CMD ["/healthcheck.sh"]
 
 # Without this line Astra doesn't stop the camera on container shutdown. Default is SIGTERM.
 STOPSIGNAL SIGINT
