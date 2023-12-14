@@ -10,7 +10,7 @@ using namespace std::chrono_literals;
 std::chrono::steady_clock::time_point last_msg_time;
 
 void write_health_status(const std::string &status) {
-  std::ofstream healthFile("/health_status.txt");
+  std::ofstream healthFile("/var/tmp/health_status.txt");
   healthFile << status;
 }
 
@@ -35,7 +35,7 @@ int main(int argc, char *argv[]) {
   rclcpp::init(argc, argv);
   auto node = rclcpp::Node::make_shared("healthcheck_node");
   auto sub = node->create_subscription<sensor_msgs::msg::Image>(
-      "camera/color/image_raw", rclcpp::SensorDataQoS(), msg_callback);
+      "camera/color/image_raw", rclcpp::SensorDataQoS().keep_last(1), msg_callback);
 
   while (rclcpp::ok()) {
     rclcpp::spin_some(node);
