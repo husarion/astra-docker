@@ -101,7 +101,7 @@ RUN if [ -f "/ros_entrypoint.sh" ]; then \
     fi
 
 COPY ./healthcheck.sh /
-HEALTHCHECK --interval=5s --timeout=2s  --start-period=5s --retries=4 \
+HEALTHCHECK --interval=2s --timeout=1s --start-period=20s --retries=1 \
     CMD ["/healthcheck.sh"]
 
 COPY rosbot-astra-params.yaml /ros2_ws/install/astra_camera/share/astra_camera/params/astra_mini_params.yaml
