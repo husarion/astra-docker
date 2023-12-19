@@ -90,18 +90,13 @@ RUN MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
     rm -rf /var/lib/apt/lists/*
 
 # Run healthcheck in background
-RUN if [ -f "/ros_entrypoint.sh" ]; then \
-        sed -i '/test -f "\/ros2_ws\/install\/setup.bash" && source "\/ros2_ws\/install\/setup.bash"/a \
-        ros2 run healthcheck_pkg healthcheck_node &' \
-        /ros_entrypoint.sh; \
-    else \
-        sed -i '/test -f "\/ros2_ws\/install\/setup.bash" && source "\/ros2_ws\/install\/setup.bash"/a \
-        ros2 run healthcheck_pkg healthcheck_node &' \
-        /vulcanexus_entrypoint.sh; \
-    fi
+RUN entrypoint_file=$(if [ -f "/ros_entrypoint.sh" ]; then echo "/ros_entrypoint.sh"; else echo "/vulcanexus_entrypoint.sh"; fi) && \
+    sed -i '/test -f "\/ros2_ws\/install\/setup.bash" && source "\/ros2_ws\/install\/setup.bash"/a \
+            ros2 run healthcheck_pkg healthcheck_node &' \
+            $entrypoint_file
 
 COPY ./healthcheck.sh /
-HEALTHCHECK --interval=5s --timeout=2s  --start-period=5s --retries=4 \
+HEALTHCHECK --interval=2s --timeout=1s --start-period=20s --retries=1 \
     CMD ["/healthcheck.sh"]
 
 COPY rosbot-astra-params.yaml /ros2_ws/install/astra_camera/share/astra_camera/params/astra_mini_params.yaml
