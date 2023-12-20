@@ -90,15 +90,15 @@ RUN MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
     rm -rf /var/lib/apt/lists/*
 
 # Run healthcheck in background
-RUN if [ -f "/ros_entrypoint.sh" ]; then \
-        sed -i '/test -f "\/ros2_ws\/install\/setup.bash" && source "\/ros2_ws\/install\/setup.bash"/a \
-        ros2 run healthcheck_pkg healthcheck_node &' \
-        /ros_entrypoint.sh; \
-    else \
-        sed -i '/test -f "\/ros2_ws\/install\/setup.bash" && source "\/ros2_ws\/install\/setup.bash"/a \
-        ros2 run healthcheck_pkg healthcheck_node &' \
-        /vulcanexus_entrypoint.sh; \
-    fi
+# RUN if [ -f "/ros_entrypoint.sh" ]; then \
+#         sed -i '/test -f "\/ros2_ws\/install\/setup.bash" && source "\/ros2_ws\/install\/setup.bash"/a \
+#         ros2 run healthcheck_pkg healthcheck_node &' \
+#         /ros_entrypoint.sh; \
+#     else \
+#         sed -i '/test -f "\/ros2_ws\/install\/setup.bash" && source "\/ros2_ws\/install\/setup.bash"/a \
+#         ros2 run healthcheck_pkg healthcheck_node &' \
+#         /vulcanexus_entrypoint.sh; \
+#     fi
 
 # Add namespaca to launch file
 COPY ./astra_mini.launch.py /ros2_ws/install/astra_camera/share/astra_camera/launch/astra_mini.launch.py

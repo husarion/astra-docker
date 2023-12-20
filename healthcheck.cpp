@@ -1,7 +1,6 @@
 #include "fstream"
 #include "rclcpp/rclcpp.hpp"
 #include "sensor_msgs/msg/image.hpp"
-#include <cstdlib>
 
 using namespace std::chrono_literals;
 
@@ -14,23 +13,8 @@ public:
       : Node("healthcheck_astra"),
         last_msg_time(std::chrono::steady_clock::now()) {
 
-    const char *sensor_name = "camera";
-    if (std::getenv("SENSOR_NAME")) {
-      sensor_name = std::getenv("SENSOR_NAME");
-    }
-
-    std::string topic = "";
-    if (const char *ns = std::getenv("ROBOT_NAMESPACE")) {
-      topic = std::string(ns) + "/" + std::string(sensor_name) + "/color/image_raw";
-    }
-    else{
-      topic = std::string(sensor_name) + "/color/image_raw";
-    }
-
-    RCLCPP_DEBUG(get_logger(), "Subscribe topic: %s", topic.c_str());
-
     subscription_ = create_subscription<sensor_msgs::msg::Image>(
-        topic, rclcpp::SensorDataQoS().keep_last(1),
+        "color/image_raw", rclcpp::SensorDataQoS().keep_last(1),
         std::bind(&HealthCheckNode::msgCallback, this, std::placeholders::_1));
 
     timer_ = create_wall_timer(HEALTHCHECK_PERIOD,
