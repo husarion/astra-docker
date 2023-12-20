@@ -94,7 +94,7 @@ COPY ./astra_mini.launch.py /ros2_ws/install/astra_camera/share/astra_camera/lau
 COPY rosbot-astra-params.yaml /ros2_ws/install/astra_camera/share/astra_camera/params/astra_mini_params.yaml
 
 COPY ./healthcheck.sh /
-HEALTHCHECK --interval=3s --timeout=1s  --start-period=10s --retries=1 \
+HEALTHCHECK --interval=2s --timeout=1s --start-period=20s --retries=1 \
     CMD ["/healthcheck.sh"]
 
 # Without this line Astra doesn't stop the camera on container shutdown. Default is SIGTERM.
