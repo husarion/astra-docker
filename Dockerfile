@@ -74,6 +74,8 @@ RUN apt update && apt install -y \
 
 COPY --from=pkg-builder /ros2_ws /ros2_ws
 COPY ./husarion_utils /husarion_utils
+# Backward compatibility
+COPY ./husarion_utils/astra.launch.py /ros2_ws/install/astra_camera/share/astra_camera/launch/astra_mini.launch.py
 
 HEALTHCHECK --interval=2s --timeout=1s --start-period=20s --retries=1 \
     CMD ["/husarion_utils/healthcheck.sh"]
