@@ -4,17 +4,15 @@
 
 services:
   astra:
-    image: husarion/astra:humble
-    # build:
-    #   context: ..
-    #   dockerfile: Dockerfile
+    # image: husarion/astra:humble
+    build:
+      context: ..
+      dockerfile: Dockerfile
     network_mode: host
     ipc: host
     devices:
       - /dev/bus/usb/
-    volumes:
-      - ./astra_params.yaml:/ros2_ws/install/astra_camera/share/astra_camera/params/astra_mini_params.yaml
-    command: ros2 launch astra_camera astra_mini.launch.py
+    command: ros2 launch /husarion_utils/astra.launch.py
 
   rviz:
     image: husarion/rviz2:humble
