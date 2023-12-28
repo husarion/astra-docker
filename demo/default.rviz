@@ -25,7 +25,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: PointCloud Color
+    SyncSource: ""
 Visualization Manager:
   Class: ""
   Displays:
