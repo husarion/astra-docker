@@ -6,7 +6,7 @@ from launch.substitutions import EnvironmentVariable, LaunchConfiguration
 
 def launch_setup(context, *args, **kwargs):
     robot_namespace = LaunchConfiguration("robot_namespace").perform(context)
-    sensor_namespace = LaunchConfiguration("sensor_namespace").perform(context)
+    device_namespace = LaunchConfiguration("device_namespace").perform(context)
 
     remapping = []
     if robot_namespace:
@@ -19,11 +19,12 @@ def launch_setup(context, *args, **kwargs):
         package="astra_camera",
         executable="astra_camera_node",
         name="camera",
-        namespace="camera",
+        namespace=device_namespace,
         parameters=[
             params_file,
             {
-                "camera_name": sensor_namespace,
+                "camera_name": device_namespace,
+                "camera_link_frame_id": device_namespace + "_link",
             },
         ],
         remappings=remapping,
@@ -34,7 +35,7 @@ def launch_setup(context, *args, **kwargs):
         package="healthcheck_pkg",
         executable="healthcheck_node",
         name="healthcheck_astra",
-        namespace=sensor_namespace,
+        namespace=device_namespace,
         output="screen",
     )
 
@@ -46,11 +47,11 @@ def generate_launch_description():
         [
             DeclareLaunchArgument(
                 "robot_namespace",
-                default_value=EnvironmentVariable("ROBOT_NAMESPACE", default_value=""),
+                default_value=EnvironmentVariable("ROS_NAMESPACE", default_value=""),
                 description="Namespace which will appear in front of all topics (including /tf and /tf_static).",
             ),
             DeclareLaunchArgument(
-                "sensor_namespace",
+                "device_namespace",
                 default_value="camera",
                 description="Sensor namespace that will appear after all topics and TF frames, used for distinguishing multiple cameras on the same robot.",
             ),

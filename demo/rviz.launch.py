@@ -16,11 +16,11 @@ def replace_rviz_fixed_frame(input_file, output_file, fix_frame):
 
 def launch_setup(context, *args, **kwargs):
     robot_namespace = LaunchConfiguration("robot_namespace").perform(context)
-    sensor_namespace = LaunchConfiguration("sensor_namespace").perform(context)
+    device_namespace = LaunchConfiguration("device_namespace").perform(context)
 
     default_rviz_conf = "/root/.rviz2/default.rviz"
     rviz_conf = "/root/.rviz2/modified_default.rviz"
-    replace_rviz_fixed_frame(default_rviz_conf, rviz_conf, f"{sensor_namespace}_link")
+    replace_rviz_fixed_frame(default_rviz_conf, rviz_conf, f"{device_namespace}_link")
 
     remapping = []
     if robot_namespace:
@@ -34,7 +34,7 @@ def launch_setup(context, *args, **kwargs):
         package="rviz2",
         executable="rviz2",
         name="rviz2",
-        namespace=sensor_namespace,
+        namespace=device_namespace,
         remappings=remapping,
         arguments=["-d", rviz_conf],
         output="screen",
@@ -48,11 +48,11 @@ def generate_launch_description():
         [
             DeclareLaunchArgument(
                 "robot_namespace",
-                default_value=EnvironmentVariable("ROBOT_NAMESPACE", default_value=""),
+                default_value=EnvironmentVariable("ROS_NAMESPACE", default_value=""),
                 description="Namespace which will appear in front of all topics (including /tf and /tf_static).",
             ),
             DeclareLaunchArgument(
-                "sensor_namespace",
+                "device_namespace",
                 default_value="camera",
                 description="Sensor namespace that will appear after all topics and TF frames, used for distinguishing multiple cameras on the same robot.",
             ),

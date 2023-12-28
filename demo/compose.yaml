@@ -15,7 +15,7 @@ services:
       - /dev/bus/usb/
     command: >
       ros2 launch /husarion_utils/astra.launch.py
-        sensor_namespace:=camera
+        device_namespace:=camera
 
   rviz:
     image: husarion/rviz2:humble
@@ -29,4 +29,4 @@ services:
       - LIBGL_ALWAYS_SOFTWARE=1
     command: >
       ros2 launch rviz.launch.py
-        sensor_namespace:=camera
+        device_namespace:=camera
