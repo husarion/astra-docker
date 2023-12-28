@@ -13,10 +13,8 @@ services:
     <<: *common-config
     devices:
       - /dev/bus/usb/
-    volumes:
-      - ./astra_params.yaml:/ros2_ws/install/astra_camera/share/astra_camera/params/astra_mini_params.yaml
     command: >
-      ros2 launch astra_camera astra_mini.launch.py
+      ros2 launch /husarion_utils/astra.launch.py
         sensor_namespace:=camera
 
   rviz:
@@ -32,5 +30,3 @@ services:
     command: >
       ros2 launch rviz.launch.py
         sensor_namespace:=camera
-
-

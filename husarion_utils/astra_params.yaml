@@ -1,0 +1,44 @@
+---
+/**:
+  ros__parameters:
+    camera_name: camera
+    depth_registration: false
+    serial_number: ''
+    device_num: 1
+    vendor_id: '0x2bc5'
+    product_id: ''
+    enable_point_cloud: true
+    enable_colored_point_cloud: true
+    point_cloud_qos: default
+    connection_delay: 100
+    color_width: 640
+    color_height: 480
+    color_fps: 30
+    enable_color: true
+    flip_color: false
+    color_qos: default
+    color_camera_info_qos: default
+    depth_width: 640
+    depth_height: 480
+    depth_fps: 30
+    enable_depth: true
+    flip_depth: false
+    depth_qos: default
+    depth_camera_info_qos: default
+    ir_width: 640
+    ir_height: 480
+    ir_fps: 30
+    enable_ir: true
+    flip_ir: false
+    ir_qos: default
+    ir_camera_info_qos: default
+    publish_tf: true
+    tf_publish_rate: 10.0
+    ir_info_url: ''
+    color_info_url: ''
+    color_depth_synchronization: false
+    oni_log_level: verbose
+    oni_log_to_console: false
+    oni_log_to_file: false
+    enable_d2c_viewer: false
+    enable_publish_extrinsic: false
