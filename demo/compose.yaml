@@ -13,6 +13,8 @@ services:
     <<: *common-config
     devices:
       - /dev/bus/usb/
+    volumes:
+      - ./astra_params.yaml:/husarion_utils/astra_params.yaml
     command: >
       ros2 launch /husarion_utils/astra.launch.py
         device_namespace:=camera

@@ -6,17 +6,6 @@ The repository includes a GitHub Actions workflow that automatically deploys bui
 
 [![ROS Docker Image](https://github.com/husarion/astra-docker/actions/workflows/ros-docker-image.yaml/badge.svg)](https://github.com/husarion/astra-docker/actions/workflows/ros-docker-image.yaml)
 
-## Add Namespace
-
-The original launch has been improved with the ability to add parameters: device_namespace and rosbot_namespace
-which result in the following changes:
-
-- Topic: `/<robot_namespace>/<device_namespace>/<default_topic>`
-- Topic TF: `/<robot_namesace>/tf`
-- URDF Links: `<device_namespace>_link`
-
-If any of the namespaces are missing, the field with `/` is omitted for topics, or replaced with default ones for URDF links.
-
 ## Prepare Environment
 
 1. Plugin the Device
@@ -47,3 +36,21 @@ If any of the namespaces are missing, the field with `/` is omitted for topics, 
 
 > [!NOTE]
 > To use the latest version of the image, run the `docker compose pull` command.
+
+## Parameters
+
+The original launch has been modified with the new parameters:
+
+| **Product Name**   | **Description**                                                                                                                             | **Default Value**      |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| `serial_port`      | USB port of connected lidar                                                                                                                 | `/dev/ttyUSB0`         |
+| `robot_namespace`  | Namespace which will appear in front of all topics (including `/tf` and `/tf_static`).                                                      | `env("ROS_NAMESPACE")` (`""` if not specified) |
+| `device_namespace` | Sensor namespace that will appear before all non absolute topics and TF frames, used for distinguishing multiple cameras on the same robot. | `""`                   |
+
+Using both `device_namespace` and `robot_namespace` makes:
+
+- Topic: `/<robot_namespace>/<device_namespace>/<default_topic>`
+- Topic TF: `/<robot_namesace>/tf`
+- URDF Links: `<device_namespace>_link`
+
+If any of the namespaces are missing, the field with `/` is omitted for topics, or replaced with default ones for URDF links.
