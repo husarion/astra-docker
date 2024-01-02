@@ -6,7 +6,7 @@ The repository includes a GitHub Actions workflow that automatically deploys bui
 
 [![ROS Docker Image](https://github.com/husarion/astra-docker/actions/workflows/ros-docker-image.yaml/badge.svg)](https://github.com/husarion/astra-docker/actions/workflows/ros-docker-image.yaml)
 
-## Namespace Feature
+## Add Namespace
 
 The original launch has been improved with the ability to add parameters: device_namespace and rosbot_namespace
 which result in the following changes:
