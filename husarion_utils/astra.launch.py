@@ -5,6 +5,7 @@ from launch.substitutions import EnvironmentVariable, LaunchConfiguration
 
 
 def launch_setup(context, *args, **kwargs):
+    params_file = LaunchConfiguration("params_file").perform(context)
     robot_namespace = LaunchConfiguration("robot_namespace").perform(context)
     device_namespace = LaunchConfiguration("device_namespace").perform(context)
 
@@ -12,8 +13,6 @@ def launch_setup(context, *args, **kwargs):
     if robot_namespace:
         remapping.append(("/tf", f"/{robot_namespace}/tf"))
         remapping.append(("/tf_static", f"/{robot_namespace}/tf_static"))
-
-    params_file = "/husarion_utils/astra_params.yaml"
 
     astra_node = Node(
         package="astra_camera",
@@ -45,6 +44,11 @@ def launch_setup(context, *args, **kwargs):
 def generate_launch_description():
     return LaunchDescription(
         [
+            DeclareLaunchArgument(
+                "params_file",
+                default_value="/husarion_utils/astra_params.yaml",
+                description="Full path to the Astra parameters file",
+            ),
             DeclareLaunchArgument(
                 "robot_namespace",
                 default_value=EnvironmentVariable("ROS_NAMESPACE", default_value=""),

@@ -38,8 +38,6 @@ RUN cd src && \
     sed -i 's/calcAndPublishStaticTransform();/if (!publish_tf_) return; calcAndPublishStaticTransform();/g' \
         /ros2_ws/src/ros2_astra_camera/astra_camera/src/ob_camera_node.cpp
 
-COPY ./husarion_utils /husarion_utils
-
 # Create healthcheck package
 RUN MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
     source "/opt/$MYDISTRO/$ROS_DISTRO/setup.bash" && \
@@ -49,10 +47,16 @@ RUN MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
             add_executable(healthcheck_node src/healthcheck.cpp)\n \
             ament_target_dependencies(healthcheck_node rclcpp sensor_msgs)\n \
             install(TARGETS healthcheck_node DESTINATION lib/${PROJECT_NAME})' \
-            /ros2_ws/src/healthcheck_pkg/CMakeLists.txt && \
-    mv /husarion_utils/healthcheck.cpp /ros2_ws/src/healthcheck_pkg/src/ && \
-    # Build
-    cd /ros2_ws && \
+            /ros2_ws/src/healthcheck_pkg/CMakeLists.txt
+
+COPY ./husarion_utils/healthcheck.cpp /ros2_ws/src/healthcheck_pkg/src/healthcheck.cpp
+
+# Backward compatibility
+COPY ./husarion_utils/astra.launch.py /ros2_ws/src/ros2_astra_camera/astra_camera/launch/astra_mini.launch.py
+
+# Build
+RUN MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
+    source "/opt/$MYDISTRO/$ROS_DISTRO/setup.bash" && \
     colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release && \
     # Save version
     echo $(cat /ros2_ws/src/ros2_astra_camera/astra_camera/package.xml | grep '<version>' | sed -r 's/.*<version>([0-9]+.[0-9]+.[0-9]+)<\/version>/\1/g') > /version.txt && \
@@ -74,8 +78,6 @@ RUN apt update && apt install -y \
 
 COPY --from=pkg-builder /ros2_ws /ros2_ws
 COPY ./husarion_utils /husarion_utils
-# Backward compatibility
-COPY ./husarion_utils/astra.launch.py /ros2_ws/install/astra_camera/share/astra_camera/launch/astra_mini.launch.py
 
 HEALTHCHECK --interval=2s --timeout=1s --start-period=20s --retries=1 \
     CMD ["/husarion_utils/healthcheck.sh"]

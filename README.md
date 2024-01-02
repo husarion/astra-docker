@@ -10,29 +10,29 @@ The repository includes a GitHub Actions workflow that automatically deploys bui
 
 1. Plugin the Device
 
-    You can use `lsusb` command to check if the device is visible.
+   You can use `lsusb` command to check if the device is visible.
 
 ## Demo
 
 1. Clone the Repository
 
-    ```bash
-    git clone https://github.com/husarion/astra-docker.git
-    cd astra-docker/demo
-    ```
+   ```bash
+   git clone https://github.com/husarion/astra-docker.git
+   cd astra-docker/demo
+   ```
 
 2. Activate the Device
 
-    ```bash
-    docker compose up astra
-    ```
+   ```bash
+   docker compose up astra
+   ```
 
 3. Launch Visualization
 
-    ```bash
-    xhost local:root
-    docker compose up rviz
-    ```
+   ```bash
+   xhost local:root
+   docker compose up rviz
+   ```
 
 > [!NOTE]
 > To use the latest version of the image, run the `docker compose pull` command.
@@ -41,11 +41,11 @@ The repository includes a GitHub Actions workflow that automatically deploys bui
 
 The original launch has been modified with the new parameters:
 
-| **Product Name**   | **Description**                                                                                                                             | **Default Value**      |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
-| `serial_port`      | USB port of connected lidar                                                                                                                 | `/dev/ttyUSB0`         |
+| **Product Name**   | **Description**                                                                                                                             | **Default Value**                              |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| `params_file`      | Full path to the Astra parameters file lidar                                                                                                | `/dev/ttyUSB0`                                 |
 | `robot_namespace`  | Namespace which will appear in front of all topics (including `/tf` and `/tf_static`).                                                      | `env("ROS_NAMESPACE")` (`""` if not specified) |
-| `device_namespace` | Sensor namespace that will appear before all non absolute topics and TF frames, used for distinguishing multiple cameras on the same robot. | `""`                   |
+| `device_namespace` | Sensor namespace that will appear before all non absolute topics and TF frames, used for distinguishing multiple cameras on the same robot. | `""`                                           |
 
 Using both `device_namespace` and `robot_namespace` makes:
 
