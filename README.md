@@ -44,7 +44,7 @@ Inside the image there is a custom `/husarion_utils/astra.launch.py` that is not
 | **Parameter**   | **Description**                                                                                                                             | **Default Value**                              |
 | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
 | `params_file`      | Full path to the Astra parameters file lidar                                                                                                | `/husarion_utils/astra_params.yaml`            |
-| `robot_namespace`  | Namespace which will appear in front of all topics (including `/tf` and `/tf_static`).                                                      | `env("ROS_NAMESPACE")` (`""` if not specified) |
+| `robot_namespace`  | Namespace which will appear in front of all topics (including `/tf` and `/tf_static`).                                                      | `env("ROBOT_NAMESPACE")` (`""` if not specified) |
 | `device_namespace` | Sensor namespace that will appear before all non absolute topics and TF frames, used for distinguishing multiple cameras on the same robot. | `"camera"`                                           |
 
 Using both `device_namespace` and `robot_namespace` makes:

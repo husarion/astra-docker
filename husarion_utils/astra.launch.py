@@ -51,7 +51,7 @@ def generate_launch_description():
             ),
             DeclareLaunchArgument(
                 "robot_namespace",
-                default_value=EnvironmentVariable("ROS_NAMESPACE", default_value=""),
+                default_value=EnvironmentVariable("ROBOT_NAMESPACE", default_value=""),
                 description="Namespace which will appear in front of all topics (including /tf and /tf_static).",
             ),
             DeclareLaunchArgument(
