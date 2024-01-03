@@ -42,3 +42,8 @@
     oni_log_to_file: false
     enable_d2c_viewer: false
     enable_publish_extrinsic: false
+
+    # Image transport parameters
+    .color.image_raw.jpeg_quality: 90
+    .depth.image_raw.jpeg_quality: 90
+    .ir.image_raw.png_level: 90

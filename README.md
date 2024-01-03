@@ -43,7 +43,7 @@ The original launch has been modified with the new parameters:
 
 | **Product Name**   | **Description**                                                                                                                             | **Default Value**                              |
 | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
-| `params_file`      | Full path to the Astra parameters file lidar                                                                                                | `/dev/ttyUSB0`                                 |
+| `params_file`      | Full path to the Astra parameters file lidar                                                                                                | `/husarion_utils/astra_params.yaml`            |
 | `robot_namespace`  | Namespace which will appear in front of all topics (including `/tf` and `/tf_static`).                                                      | `env("ROS_NAMESPACE")` (`""` if not specified) |
 | `device_namespace` | Sensor namespace that will appear before all non absolute topics and TF frames, used for distinguishing multiple cameras on the same robot. | `""`                                           |
 
