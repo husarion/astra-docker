@@ -78,6 +78,7 @@ RUN apt update && apt install -y \
     rm -rf /var/lib/apt/lists/*
 
 COPY --from=pkg-builder /ros2_ws /ros2_ws
+COPY --from=pkg-builder /version.txt /version.txt
 COPY ./husarion_utils /husarion_utils
 
 HEALTHCHECK --interval=2s --timeout=1s --start-period=20s --retries=1 \
