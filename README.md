@@ -39,18 +39,18 @@ The repository includes a GitHub Actions workflow that automatically deploys bui
 
 ## Parameters
 
-The original launch has been modified with the new parameters:
+Inside the image there is a custom `/husarion_utils/astra.launch.py` that is not the part of the ROS 2 package for Astra camera. It was added for easy integration with Husarion robots. This launch file contains following parameters:
 
 | **Parameter**   | **Description**                                                                                                                             | **Default Value**                              |
 | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
 | `params_file`      | Full path to the Astra parameters file lidar                                                                                                | `/husarion_utils/astra_params.yaml`            |
 | `robot_namespace`  | Namespace which will appear in front of all topics (including `/tf` and `/tf_static`).                                                      | `env("ROS_NAMESPACE")` (`""` if not specified) |
-| `device_namespace` | Sensor namespace that will appear before all non absolute topics and TF frames, used for distinguishing multiple cameras on the same robot. | `""`                                           |
+| `device_namespace` | Sensor namespace that will appear before all non absolute topics and TF frames, used for distinguishing multiple cameras on the same robot. | `"camera"`                                           |
 
 Using both `device_namespace` and `robot_namespace` makes:
 
 - Topic: `/<robot_namespace>/<device_namespace>/<default_topic>`
 - Topic TF: `/<robot_namesace>/tf`
-- URDF Links: `<device_namespace>_link`
+- URDF Link: `<device_namespace>_link` (default `camera_link`)
 
-If any of the namespaces are missing, the field with `/` is omitted for topics, or replaced with default ones for URDF links.
+If any of the namespaces are missing, the field with `/` is omitted for topics, or replaced with default ones for URDF link.
