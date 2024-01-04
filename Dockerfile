@@ -31,7 +31,7 @@ RUN git clone https://github.com/libuvc/libuvc.git src/libuvc && \
     make install && \
     ldconfig
 
-# Install ros2_astra_camera (fork connected with https://github.com/orbbec/ros2_astra_camera/issue/1)
+# Install ros2_astra_camera (fork connected with https://github.com/orbbec/ros2_astra_camera/issues/1)
 RUN cd src && \
     git clone https://github.com/rafal-gorecki/ros2_astra_camera.git && \
     # Fix publish_tf_ parameter
