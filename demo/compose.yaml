@@ -1,6 +1,8 @@
-# Quick Start
-# just plug Orbbec Astra to your laptop and launch:
-# $ docker compose up
+x-common-config:
+  &common-config
+  network_mode: host
+  ipc: host
+  env_file: .env
 
 services:
   astra:
@@ -8,21 +10,25 @@ services:
     # build:
     #   context: ..
     #   dockerfile: Dockerfile
-    network_mode: host
-    ipc: host
+    <<: *common-config
     devices:
       - /dev/bus/usb/
     volumes:
-      - ./astra_params.yaml:/ros2_ws/install/astra_camera/share/astra_camera/params/astra_mini_params.yaml
-    command: ros2 launch astra_camera astra_mini.launch.py
+      - ./astra_params.yaml:/husarion_utils/astra_params.yaml
+    command: >
+      ros2 launch /husarion_utils/astra.launch.py
+        device_namespace:=camera
 
   rviz:
     image: husarion/rviz2:humble
-    network_mode: host
-    ipc: host
+    <<: *common-config
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - ./default.rviz:/root/.rviz2/default.rviz
+      - ./rviz.launch.py:/ros2_ws/rviz.launch.py
     environment:
       - DISPLAY
       - LIBGL_ALWAYS_SOFTWARE=1
+    command: >
+      ros2 launch rviz.launch.py
+        device_namespace:=camera
