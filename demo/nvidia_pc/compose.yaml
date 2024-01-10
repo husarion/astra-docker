@@ -9,7 +9,7 @@ services:
       - /dev/bus/usb/
     volumes:
       - ./astra_params.yaml:/husarion_utils/astra_params.yaml
-      - ../husarion_utils:/husarion_utils
+      - ../../husarion_utils:/husarion_utils
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=all 
