@@ -74,6 +74,12 @@ RUN rm -rf /etc/ros/rosdep/sources.list.d/20-default.list && \
 # =========================== final stage ===============================
 FROM husarnet/ros:${PREFIX}${ROS_DISTRO}-ros-core AS final-stage
 
+# Add architecture specific packages conditionally
+ARG TARGETPLATFORM
+RUN if [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
+        apt update && apt install -y libraspberrypi-bin; \
+    fi
+
 RUN apt update && apt install -y \
         libgoogle-glog-dev \
         ros-$ROS_DISTRO-image-geometry \
@@ -81,6 +87,7 @@ RUN apt update && apt install -y \
         ros-$ROS_DISTRO-image-transport \
         ros-$ROS_DISTRO-image-transport-plugins \
         ros-$ROS_DISTRO-tf2-ros \
+        ffmpeg && \
         ros-$ROS_DISTRO-cv-bridge && \
     apt-get autoremove -y && \
     apt-get clean && \

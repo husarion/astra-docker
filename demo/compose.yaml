@@ -1,31 +1,42 @@
 services:
   astra:
     image: husarion/astra:humble-ffmpeg-plugin
-    # image: husarion/astra:humble
     # build:
     #   context: ..
     #   dockerfile: Dockerfile
-    # <<: *common-config
+    runtime: nvidia
     devices:
       - /dev/bus/usb/
     volumes:
       - ./astra_params.yaml:/husarion_utils/astra_params.yaml
+      - ../husarion_utils:/husarion_utils
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all 
     command: >
       ros2 launch /husarion_utils/astra.launch.py
         device_namespace:=camera
 
   rviz:
     image: husarion/rviz2:humble-ffmpeg-plugin
-    # image: husarion/rviz2:humble
-    # <<: *common-config
+    runtime: nvidia
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
-      # - ./default.rviz:/root/.rviz2/default.rviz
+      - ./default.rviz:/root/.rviz2/default.rviz
       - ./rviz.launch.py:/ros2_ws/rviz.launch.py
     environment:
       - DISPLAY
-      - LIBGL_ALWAYS_SOFTWARE=1
-    command: tail -f /dev/null
-    # command: >
-    #   ros2 launch rviz.launch.py
-    #     device_namespace:=camera _image_transport:=ffmpeg
+      # - LIBGL_ALWAYS_SOFTWARE=1
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+    command: >
+      ros2 launch rviz.launch.py
+        device_namespace:=camera
+
+  image_decompressor:
+    build: .
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all    
+    command: ros2 run image_transport republish ffmpeg in/ffmpeg:=/camera/color/image_raw/ffmpeg raw out:=image_raw/uncompressed
