@@ -50,4 +50,4 @@
 
     # ffmpeg_image_transport.encoding: "h264_v4l2m2m" # using Raspberry Pi 4 hardware encoder
     # ffmpeg_image_transport.encoding: "libx264" # using CPU encoder
-    ffmpeg_image_transport.encoding: "hevc_nvenc" # using Nvidia GPU encoder
+    ffmpeg_image_transport.encoding: "hevc_nvenc" # using Nvidia GPU encoder (find available tunning options with "ffmpeg -h encoder=hevc_nvenc")

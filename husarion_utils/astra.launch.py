@@ -23,9 +23,11 @@ def launch_setup(context, *args, **kwargs):
             {
                 "camera_name": device_namespace,
                 "camera_link_frame_id": device_namespace + "_link",
+                # libx264 is software encoding (available presets: "ffmpeg -h encoder=libx264")
+                "ffmpeg_image_transport.encoding": "libx264",
                 "ffmpeg_image_transport.preset": "ultrafast",
                 "ffmpeg_image_transport.tune": "zerolatency",
-                "ffmpeg_image_transport.encoding": "libx264",
+                # h264_v4l2m2m is RPi4 hardware encoding
                 # "ffmpeg_image_transport.encoding": "h264_v4l2m2m", # using RPi4 hardware encoding (/dev/vchiq)
             },
             params_file,
