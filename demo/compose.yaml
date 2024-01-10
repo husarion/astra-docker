@@ -1,16 +1,16 @@
-x-common-config:
-  &common-config
-  network_mode: host
-  ipc: host
-  env_file: .env
+# x-common-config:
+#   &common-config
+#   network_mode: host
+#   ipc: host
+#   env_file: .env
 
 services:
   astra:
-    image: husarion/astra:humble
-    # build:
-    #   context: ..
-    #   dockerfile: Dockerfile
-    <<: *common-config
+    # image: husarion/astra:humble
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    # <<: *common-config
     devices:
       - /dev/bus/usb/
     volumes:
@@ -21,7 +21,7 @@ services:
 
   rviz:
     image: husarion/rviz2:humble
-    <<: *common-config
+    # <<: *common-config
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - ./default.rviz:/root/.rviz2/default.rviz
