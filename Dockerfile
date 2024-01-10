@@ -87,7 +87,7 @@ RUN apt update && apt install -y \
         ros-$ROS_DISTRO-image-transport \
         ros-$ROS_DISTRO-image-transport-plugins \
         ros-$ROS_DISTRO-tf2-ros \
-        ffmpeg && \
+        ffmpeg \
         ros-$ROS_DISTRO-cv-bridge && \
     apt-get autoremove -y && \
     apt-get clean && \
