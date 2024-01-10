@@ -1,15 +1,10 @@
-# x-common-config:
-#   &common-config
-#   network_mode: host
-#   ipc: host
-#   env_file: .env
-
 services:
   astra:
+    image: husarion/astra:humble-ffmpeg-plugin
     # image: husarion/astra:humble
-    build:
-      context: ..
-      dockerfile: Dockerfile
+    # build:
+    #   context: ..
+    #   dockerfile: Dockerfile
     # <<: *common-config
     devices:
       - /dev/bus/usb/
@@ -20,15 +15,17 @@ services:
         device_namespace:=camera
 
   rviz:
-    image: husarion/rviz2:humble
+    image: husarion/rviz2:humble-ffmpeg-plugin
+    # image: husarion/rviz2:humble
     # <<: *common-config
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
-      - ./default.rviz:/root/.rviz2/default.rviz
+      # - ./default.rviz:/root/.rviz2/default.rviz
       - ./rviz.launch.py:/ros2_ws/rviz.launch.py
     environment:
       - DISPLAY
       - LIBGL_ALWAYS_SOFTWARE=1
-    command: >
-      ros2 launch rviz.launch.py
-        device_namespace:=camera
+    command: tail -f /dev/null
+    # command: >
+    #   ros2 launch rviz.launch.py
+    #     device_namespace:=camera _image_transport:=ffmpeg
