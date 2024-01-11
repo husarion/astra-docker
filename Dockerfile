@@ -21,7 +21,8 @@ RUN apt update && apt install -y \
         ros-$ROS_DISTRO-image-transport-plugins \
         ros-$ROS_DISTRO-tf2 \
         ros-$ROS_DISTRO-tf2-eigen \
-        ros-$ROS_DISTRO-tf2-sensor-msgs
+        ros-$ROS_DISTRO-tf2-sensor-msgs \
+        ros-$ROS_DISTRO-cv-bridge
 
 # Install libuvc
 RUN git clone https://github.com/libuvc/libuvc.git src/libuvc && \
@@ -34,6 +35,9 @@ RUN git clone https://github.com/libuvc/libuvc.git src/libuvc && \
 # Install ros2_astra_camera (fork connected with https://github.com/orbbec/ros2_astra_camera/issues/1)
 RUN cd src && \
     git clone https://github.com/rafal-gorecki/ros2_astra_camera.git && \
+    git clone https://github.com/ros-misc-utilities/ffmpeg_image_transport.git && \
+    cd .. && \
+    vcs import src < src/ffmpeg_image_transport/ffmpeg_image_transport.repos && \
     # Fix publish_tf_ parameter
     sed -i 's/calcAndPublishStaticTransform();/if (!publish_tf_) return; calcAndPublishStaticTransform();/g' \
         /ros2_ws/src/ros2_astra_camera/astra_camera/src/ob_camera_node.cpp
@@ -55,7 +59,11 @@ COPY ./husarion_utils/healthcheck.cpp /ros2_ws/src/healthcheck_pkg/src/healthche
 COPY ./husarion_utils/astra.launch.py /ros2_ws/src/ros2_astra_camera/astra_camera/launch/astra_mini.launch.py
 
 # Build
-RUN MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
+RUN rm -rf /etc/ros/rosdep/sources.list.d/20-default.list && \
+    rosdep init && \
+    rosdep update --rosdistro $ROS_DISTRO && \
+    rosdep install --from-paths src --ignore-src -y && \
+    MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
     source "/opt/$MYDISTRO/$ROS_DISTRO/setup.bash" && \
     colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release && \
     # Save version
@@ -66,13 +74,21 @@ RUN MYDISTRO=${PREFIX:-ros}; MYDISTRO=${MYDISTRO//-/} && \
 # =========================== final stage ===============================
 FROM husarnet/ros:${PREFIX}${ROS_DISTRO}-ros-core AS final-stage
 
+# Add architecture specific packages conditionally
+ARG TARGETPLATFORM
+RUN if [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
+        apt update && apt install -y libraspberrypi-bin; \
+    fi
+
 RUN apt update && apt install -y \
         libgoogle-glog-dev \
         ros-$ROS_DISTRO-image-geometry \
         ros-$ROS_DISTRO-image-publisher \
         ros-$ROS_DISTRO-image-transport \
         ros-$ROS_DISTRO-image-transport-plugins \
-        ros-$ROS_DISTRO-tf2-ros && \
+        ros-$ROS_DISTRO-tf2-ros \
+        ffmpeg \
+        ros-$ROS_DISTRO-cv-bridge && \
     apt-get autoremove -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
