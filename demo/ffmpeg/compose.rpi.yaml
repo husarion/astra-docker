@@ -1,0 +1,24 @@
+services:
+  astra:
+    # image: husarion/astra:humble-nightly
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+    devices:
+      - /dev/bus/usb/
+    command: >
+      ros2 launch /husarion_utils/astra.launch.py
+        device_namespace:=camera
+
+  rviz:
+    image: husarion/rviz2:humble-nightly
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ../default.rviz:/default.rviz
+      - ../rviz.launch.py:/ros2_ws/rviz.launch.py
+    environment:
+      - DISPLAY
+      - LIBGL_ALWAYS_SOFTWARE=1
+    command: >
+      ros2 launch rviz.launch.py
+        device_namespace:=camera
