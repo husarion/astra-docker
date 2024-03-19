@@ -121,7 +121,7 @@ Visualization Manager:
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /image_raw/uncompressed
+        Value: color/image_uncompressed
       Value: true
   Enabled: true
   Global Options:

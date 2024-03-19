@@ -8,11 +8,23 @@ def launch_setup(context, *args, **kwargs):
     params_file = LaunchConfiguration("params_file").perform(context)
     robot_namespace = LaunchConfiguration("robot_namespace").perform(context)
     device_namespace = LaunchConfiguration("device_namespace").perform(context)
+    codec = LaunchConfiguration("codec").perform(context)
 
     remapping = []
     if robot_namespace:
         remapping.append(("/tf", f"/{robot_namespace}/tf"))
         remapping.append(("/tf_static", f"/{robot_namespace}/tf_static"))
+
+    ffmpeg_params = {
+        "ffmpeg_image_transport.preset": "ultrafast",
+        "ffmpeg_image_transport.tune": "zerolatency",
+    }
+    if codec == "nvidia":
+        ffmpeg_params["ffmpeg_image_transport.encoding"] = "hevc_nvenc"
+    if codec == "rpi":
+        ffmpeg_params["ffmpeg_image_transport.encoding"] = "h264_v4l2m2m"
+    if codec == "cpu":
+        ffmpeg_params["ffmpeg_image_transport.encoding"] = "libx264"
 
     astra_node = Node(
         package="astra_camera",
@@ -23,14 +35,9 @@ def launch_setup(context, *args, **kwargs):
             {
                 "camera_name": device_namespace,
                 "camera_link_frame_id": device_namespace + "_link",
-                # libx264 is software encoding (available presets: "ffmpeg -h encoder=libx264")
-                "ffmpeg_image_transport.encoding": "libx264",
-                "ffmpeg_image_transport.preset": "ultrafast",
-                "ffmpeg_image_transport.tune": "zerolatency",
-                # h264_v4l2m2m is RPi4 hardware encoding
-                # "ffmpeg_image_transport.encoding": "h264_v4l2m2m", # using RPi4 hardware encoding (/dev/vchiq)
             },
             params_file,
+            ffmpeg_params,
         ],
         remappings=remapping,
         output="screen",
@@ -54,6 +61,12 @@ def generate_launch_description():
                 "params_file",
                 default_value="/husarion_utils/astra_params.yaml",
                 description="Full path to the Astra parameters file",
+            ),
+            DeclareLaunchArgument(
+                "codec",
+                default_value="cpu",
+                description="Select your codec depend on your hardware",
+                choices=["cpu", "nvidia", "rpi"],
             ),
             DeclareLaunchArgument(
                 "robot_namespace",

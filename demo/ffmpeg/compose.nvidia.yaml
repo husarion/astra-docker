@@ -1,0 +1,37 @@
+x-common-config:
+  &common-config
+  network_mode: host
+  ipc: host
+
+services:
+  astra:
+    image: husarion/astra:humble-nightly
+    # build:
+    #   context: ../..
+    #   dockerfile: Dockerfile
+    <<: *common-config
+    runtime: nvidia
+    devices:
+      - /dev/bus/usb/
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+    command: >
+      ros2 launch /husarion_utils/astra.launch.py
+        device_namespace:=camera codec:=nvidia
+
+  rviz:
+    image: husarion/rviz2:humble-nightly
+    <<: *common-config
+    runtime: nvidia
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ../default.rviz:/default.rviz
+      - ../rviz.launch.py:/ros2_ws/rviz.launch.py
+    environment:
+      - DISPLAY
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+    command: >
+      ros2 launch rviz.launch.py
+        device_namespace:=camera
