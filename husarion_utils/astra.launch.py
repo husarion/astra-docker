@@ -64,7 +64,7 @@ def generate_launch_description():
             ),
             DeclareLaunchArgument(
                 "codec",
-                default_value="cpu",
+                default_value="rpi",
                 description="Select your codec depend on your hardware",
                 choices=["cpu", "nvidia", "rpi"],
             ),
