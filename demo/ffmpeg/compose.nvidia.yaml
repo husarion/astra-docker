@@ -1,9 +1,15 @@
+x-common-config:
+  &common-config
+  network_mode: host
+  ipc: host
+
 services:
   astra:
-    # image: husarion/astra:humble-nightly
-    build:
-      context: ../..
-      dockerfile: Dockerfile
+    image: husarion/astra:humble-nightly
+    # build:
+    #   context: ../..
+    #   dockerfile: Dockerfile
+    <<: *common-config
     runtime: nvidia
     devices:
       - /dev/bus/usb/
@@ -16,6 +22,7 @@ services:
 
   rviz:
     image: husarion/rviz2:humble-nightly
+    <<: *common-config
     runtime: nvidia
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
