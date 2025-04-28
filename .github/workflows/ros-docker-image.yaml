@@ -40,7 +40,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ros_distro: [humble]   # "iron" no supported
+        ros_distro: [humble, jazzy]   # "iron" no supported
 
     steps:
 
